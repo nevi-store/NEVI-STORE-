@@ -57,7 +57,7 @@
             text-shadow: 0 0 10px #f9c74f;
         }
 
-        .event-container {
+        .event-container, .game-container {
             display: flex;
             justify-content: space-around;
             flex-wrap: wrap;
@@ -207,7 +207,7 @@
             <input type="text" id="game" readonly>
 
             <label for="amount">Jumlah <span id="currencyLabel">Diamond</span>:</label>
-            <input type="number" id="amount" placeholder="Masukkan jumlah (maksimal 1000)" min="1" max="1000" required>
+            <input type="number" id="amount" placeholder="Masukkan jumlah (max 5000)" min="1" max="5000" required>
 
             <label for="payment">Metode Pembayaran:</label>
             <select id="payment" required>
@@ -218,9 +218,9 @@
                 <option value="ETH">ETH</option>
             </select>
 
-            <label for="id">ID Game:</label>
-            <input type="text" id="id" placeholder="Masukkan ID Game" required>
-            <span class="error" id="errorMessage">Harap isi semua bidang dengan benar!</span>
+            <label for="name">ID Player:</label>
+            <input type="text" id="name" placeholder="Masukkan ID Player" required>
+            <span class="error" id="errorMessage">Harap isi semua bidang!</span>
 
             <button type="button" onclick="processTopUp()">Proses Top-Up</button>
         </form>
@@ -246,18 +246,22 @@
             const game = document.getElementById('game').value;
             const amount = document.getElementById('amount').value;
             const payment = document.getElementById('payment').value;
-            const id = document.getElementById('id').value;
+            const name = document.getElementById('name').value;
 
-            if (!game || !amount || !payment || !id || amount <= 0 || amount > 1000) {
+            if (!game || !amount || !payment || !name || amount <= 0 || amount > 5000) {
                 document.getElementById('errorMessage').style.display = 'block';
                 return;
             }
 
             const currency = document.getElementById('currencyLabel').textContent;
             const message = `Halo Admin, saya ingin melakukan top-up dengan rincian berikut:%0A
-- ID Game: ${id}%0A
+- ID Player: ${name}%0A
 - Game: ${game}%0A
 - Jumlah: ${amount} ${currency}%0A
 - Metode Pembayaran: ${payment}`;
 
-            window.open(`https://wa.me/6281273194094
+            window.open(`https://wa.me/6281273194094?text=${message}`, '_blank');
+        }
+    </script>
+</body>
+                </html>
