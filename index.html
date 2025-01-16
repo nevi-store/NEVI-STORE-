@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Codashop Game Top Up</title>
+    <title>NEVI STORE</title>
     <style>
         /* Gaya Global */
         body {
@@ -46,25 +46,24 @@
             color: #a9a9b7;
         }
 
-        .game-selection {
-            background: #0f3460;
+        /* Gaya Event */
+        .events, .game-selection, .top-up-form, footer {
             padding: 40px 0;
             text-align: center;
         }
 
-        .game-selection h2 {
+        h2 {
             color: #f9c74f;
             text-shadow: 0 0 10px #f9c74f;
-            margin-bottom: 20px;
         }
 
-        .game-container {
+        .event-container, .game-container {
             display: flex;
             justify-content: space-around;
             flex-wrap: wrap;
         }
 
-        .game-card {
+        .card {
             background: #16213e;
             border: 1px solid #f9c74f;
             padding: 20px;
@@ -77,25 +76,24 @@
             transition: transform 0.3s;
         }
 
-        .game-card:hover {
+        .card:hover {
             transform: scale(1.05);
         }
 
-        .game-card img {
+        .card img {
             max-width: 100%;
             border-radius: 10px;
             margin-bottom: 10px;
         }
 
-        .game-card h3 {
+        .card h3 {
             color: #f9c74f;
             margin-bottom: 10px;
         }
 
+        /* Gaya Formulir */
         .top-up-form {
             display: none;
-            padding: 40px 0;
-            text-align: center;
             background-size: cover;
             background-position: center;
             animation: fadeIn 0.5s ease-out;
@@ -104,17 +102,6 @@
         .top-up-form.show {
             display: block;
             animation: slideUp 0.5s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(50%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
         }
 
         form {
@@ -153,23 +140,17 @@
             font-weight: bold;
         }
 
-        .event-banner {
-            background: #0f3460;
-            padding: 20px 0;
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .event-banner h2 {
-            color: #f9c74f;
+        .error {
+            color: #f54242;
+            font-size: 14px;
+            margin-top: -10px;
             margin-bottom: 10px;
+            display: none;
         }
 
         footer {
             background: #0f3460;
             color: #a9a9b7;
-            text-align: center;
-            padding: 20px 0;
         }
     </style>
 </head>
@@ -182,25 +163,19 @@
         </div>
     </header>
 
-    <!-- Banner Event -->
-    <section class="event-banner">
-        <h2>Event Spesial! Cashback hingga 20%</h2>
-        <p>Promo berlaku hingga akhir bulan ini, jangan sampai ketinggalan!</p>
-    </section>
-
     <!-- Pilih Game -->
     <section class="game-selection">
         <h2>Pilih Game</h2>
         <div class="game-container">
-            <div class="game-card" onclick="selectGame('Free Fire', 'free-fire-bg.jpg')">
+            <div class="card" onclick="selectGame('Free Fire', 'free-fire-bg.jpg', 'Diamond')">
                 <img src="free-fire.jpg" alt="Free Fire">
                 <h3>Free Fire</h3>
             </div>
-            <div class="game-card" onclick="selectGame('Mobile Legends', 'mobile-legends-bg.jpg')">
+            <div class="card" onclick="selectGame('Mobile Legends', 'mobile-legends-bg.jpg', 'Diamond')">
                 <img src="mobile-legends.jpg" alt="Mobile Legends">
                 <h3>Mobile Legends</h3>
             </div>
-            <div class="game-card" onclick="selectGame('Arena Break Out', 'arena-break-out-bg.jpg')">
+            <div class="card" onclick="selectGame('Arena Break Out', 'arena-break-out-bg.jpg', 'Bond')">
                 <img src="arena-break-out.jpg" alt="Arena Break Out">
                 <h3>Arena Break Out</h3>
             </div>
@@ -214,8 +189,8 @@
             <label for="game">Game Terpilih:</label>
             <input type="text" id="game" readonly>
 
-            <label for="amount">Jumlah Diamond/Bond (Max 1000):</label>
-            <input type="number" id="amount" min="1" max="1000" placeholder="Masukkan jumlah (1-1000)" required>
+            <label for="amount">Jumlah <span id="currencyLabel">Diamond</span>:</label>
+            <input type="number" id="amount" placeholder="Masukkan jumlah (1-1000)" min="1" max="1000" required>
 
             <label for="payment">Metode Pembayaran:</label>
             <select id="payment" required>
@@ -228,6 +203,7 @@
 
             <label for="id">ID Game:</label>
             <input type="text" id="id" placeholder="Masukkan ID Game" required>
+            <span class="error" id="errorMessage">Harap isi semua bidang!</span>
 
             <button type="button" onclick="processTopUp()">Proses Top-Up</button>
         </form>
@@ -240,11 +216,12 @@
     </footer>
 
     <script>
-        function selectGame(gameName, backgroundImage) {
+        function selectGame(gameName, backgroundImage, currency) {
             document.getElementById('game').value = gameName;
             const formSection = document.querySelector('.top-up-form');
             formSection.style.backgroundImage = `url('${backgroundImage}')`;
             formSection.classList.add('show');
+            document.getElementById('currencyLabel').textContent = currency;
             window.scrollTo(0, document.getElementById('topUpFormSection').offsetTop);
         }
 
@@ -254,7 +231,8 @@
             const payment = document.getElementById('payment').value;
             const id = document.getElementById('id').value;
 
-            if (amount < 1 || amount > 1000 || isNaN(amount)) {
+            // Validasi jumlah diamond/bond (maksimal 1000)
+            if (amount <= 0 || amount > 1000 || isNaN(amount)) {
                 alert('Jumlah Diamond/Bond harus antara 1 hingga 1000.');
                 return;
             }
@@ -264,14 +242,15 @@
                 return;
             }
 
+            const currency = document.getElementById('currencyLabel').textContent;
             const message = `Halo Admin, saya ingin melakukan top-up dengan rincian berikut:%0A
 - ID Game: ${id}%0A
 - Game: ${game}%0A
-- Jumlah: ${amount}%0A
+- Jumlah: ${amount} ${currency}%0A
 - Metode Pembayaran: ${payment}`;
 
             window.open(`https://wa.me/6281273194094?text=${message}`, '_blank');
         }
     </script>
 </body>
-</html>
+                    </html>
