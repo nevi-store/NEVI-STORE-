@@ -163,6 +163,23 @@
         </div>
     </header>
 
+    <!-- Event -->
+    <section class="events">
+        <h2>Event</h2>
+        <div class="event-container">
+            <div class="card">
+                <img src="event1.jpg" alt="Event 1">
+                <h3>Elite Pass</h3>
+                <p>Periode: 01-30 Juni 2025</p>
+            </div>
+            <div class="card">
+                <img src="event2.jpg" alt="Event 2">
+                <h3>Membership All Game</h3>
+                <p>Periode: 15-25 Januari 2025</p>
+            </div>
+        </div>
+    </section>
+
     <!-- Pilih Game -->
     <section class="game-selection">
         <h2>Pilih Game</h2>
@@ -190,7 +207,7 @@
             <input type="text" id="game" readonly>
 
             <label for="amount">Jumlah <span id="currencyLabel">Diamond</span>:</label>
-            <input type="number" id="amount" placeholder="Masukkan jumlah (1-1000)" min="1" max="1000" required>
+            <input type="number" id="amount" placeholder="Masukkan jumlah (maksimal 1000)" min="1" max="1000" required>
 
             <label for="payment">Metode Pembayaran:</label>
             <select id="payment" required>
@@ -203,7 +220,7 @@
 
             <label for="id">ID Game:</label>
             <input type="text" id="id" placeholder="Masukkan ID Game" required>
-            <span class="error" id="errorMessage">Harap isi semua bidang!</span>
+            <span class="error" id="errorMessage">Harap isi semua bidang dengan benar!</span>
 
             <button type="button" onclick="processTopUp()">Proses Top-Up</button>
         </form>
@@ -227,18 +244,12 @@
 
         function processTopUp() {
             const game = document.getElementById('game').value;
-            const amount = parseInt(document.getElementById('amount').value, 10);
+            const amount = document.getElementById('amount').value;
             const payment = document.getElementById('payment').value;
             const id = document.getElementById('id').value;
 
-            // Validasi jumlah diamond/bond (maksimal 1000)
-            if (amount <= 0 || amount > 1000 || isNaN(amount)) {
-                alert('Jumlah Diamond/Bond harus antara 1 hingga 1000.');
-                return;
-            }
-
-            if (!id.trim()) {
-                alert('Harap masukkan ID Game yang valid.');
+            if (!game || !amount || !payment || !id || amount <= 0 || amount > 1000) {
+                document.getElementById('errorMessage').style.display = 'block';
                 return;
             }
 
@@ -253,4 +264,4 @@
         }
     </script>
 </body>
-                    </html>
+    </html>
